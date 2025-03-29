@@ -1,0 +1,105 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  Poll          Poll[]
+  Vote          Vote[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+model Poll {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  // "owner" fait le lien avec l'utilisateur qui a créé le sondage
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+  options     Option[] // Les différentes options du sondage
+  votes       Vote[] // Les votes effectués
+  createdAt   DateTime @default(now())
+  location    String? // <- nouveau champ
+  likes       Int      @default(0) // <- gestion simplifiée des likes
+  dislikes    Int      @default(0)
+}
+
+model Option {
+  id     String @id @default(cuid())
+  text   String
+  pollId String
+  poll   Poll   @relation(fields: [pollId], references: [id])
+  // Permet de compter les votes par option si besoin
+  votes  Vote[]
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  pollId    String
+  poll      Poll     @relation(fields: [pollId], references: [id])
+  optionId  String
+  option    Option   @relation(fields: [optionId], references: [id])
+  createdAt DateTime @default(now())
+}
