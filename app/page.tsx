@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import Link from "next/link";
-import { BarChart3, PlusCircle, Share2, Users } from "lucide-react";
-import { getUser } from "@/lib/auth-session";
+import {BarChart3, PlusCircle, Share2} from "lucide-react";
+import {getUser} from "@/lib/auth-session";
 
 export default async function Home() {
   const user = await getUser();
@@ -40,7 +40,8 @@ export default async function Home() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                Quelques clics suffisent pour créer un sondage personnalisé avec autant d'options que vous le souhaitez.
+                Quelques clics suffisent pour créer un sondage personnalisé avec autant
+                d&apos;options que vous le souhaitez.
               </p>
             </CardContent>
           </Card>
@@ -76,7 +77,8 @@ export default async function Home() {
         <section className="bg-muted/50 rounded-xl p-8 text-center space-y-6">
           <h2 className="text-2xl font-bold">Prêt à créer votre premier sondage?</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Rejoignez des milliers d'utilisateurs qui prennent déjà des décisions ensemble grâce à notre plateforme de sondage simple et intuitive.
+            Rejoignez des milliers d&apos;utilisateurs qui prennent déjà des décisions ensemble
+            grâce à notre plateforme de sondage simple et intuitive.
           </p>
           <Button asChild size="lg">
             <Link href={user ? "/polls/create" : "/auth/signin"}>
